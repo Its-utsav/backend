@@ -1,0 +1,20 @@
+{
+  "name": "first-hosting",
+  "version": "1.0.0",
+  "description": "This is node js server with express on glitch",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [
+    "node",
+    "hosting",
+    "server"
+  ],
+  "author": "Utsav Dhimmar",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2"
+  }
+}
