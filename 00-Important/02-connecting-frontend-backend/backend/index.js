@@ -1,15 +1,17 @@
 import express from "express"; // Morden JS
 // ES modules
 // import cors from "cors"
+import path from "path"
 const app = express()
 const port = process.env.PORT || 8000;
 
 
 // app.use(cors())
+app.use(express.static("dist"))
 
-app.get("/", (req, res) => {
-    res.end("At Home")
-})
+// app.get("/", (req, res) => {
+//     res.end("At Home")
+// })
 
 app.get("/api/jokes", (req, res) => {
     const jsJokes = [

@@ -24,8 +24,6 @@ function App() {
       });
   }, []);
 
-  console.log(jokes);
-
   return (
     <>
       <h1>Connecting backend and frontend</h1>

@@ -55,3 +55,6 @@ fetch("api/jokes", {
     });
 ```
 - here i am  manually handling json response
+- once our development is done we need to keep separate our backend files and frontend files WHY ?
+- Once our react app is done than we build it using `npm run build` it will create a `/dist`  folder which has the all last html , css and js file which will be executed by browser 
+- Suppose our frontend file fetch some data from our backend serve so in such scenario data fetching could not be complete so we need to move our `dist` folder to the backend directory hmm good but when we need to made some change in frontend than we need to build it again and move to backend folder OH NO   
