@@ -1,6 +1,6 @@
-import mongoose from "mongoose";
+import { Schema, model } from "mongoose";
 
-const subtodoSchema = new mongoose.Schema({
+const subtodoSchema = new Schema({
     content: {
         type: String,
         required: true
@@ -17,4 +17,4 @@ const subtodoSchema = new mongoose.Schema({
     timestamps: true
 })
 
-export const Subtodo = mongoose.model("Subtodo", subtodoSchema)
+export const Subtodo = model("Subtodo", subtodoSchema)
