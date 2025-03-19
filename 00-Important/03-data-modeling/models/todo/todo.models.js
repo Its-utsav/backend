@@ -10,7 +10,7 @@ const todoSchema = new Schema({
         default: false
     },
     createdBy: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: "User",
         required: true,
     },
@@ -18,7 +18,7 @@ const todoSchema = new Schema({
         // Array of sub todo
         type: [
             {
-                type: mongoose.Schema.Types.ObjectId,
+                type: Schema.Types.ObjectId,
                 ref: "subtodo"
             }
         ]
@@ -32,4 +32,4 @@ const todoSchema = new Schema({
     }
 }, { timestamps: true })
 
-export const todo = model("todo", todoSchema)
+export const Todo = model("Todo", todoSchema)

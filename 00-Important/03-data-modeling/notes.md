@@ -1,20 +1,20 @@
 - in any backend we do majority work on data , so data is very important
-- What kind of data , what is structure of data , 
-- What is our table schema , what will store in our table etc ... 
+- What kind of data , what is structure of data ,
+- What is our table schema , what will store in our table etc ...
 - Here Data modelling come into the picture
 - It is a process of creating visual representation of how we structure of the data , how we will store our data ,  organized them etc.
 - It also include how data is bind with together
 - How data is dependent on each other
 
 - Example
-- if we are creating a todo based application , so we need to store the Todo in our DB , before we store the todo in our DB , we need to identify the what will store in our DB 
-## Todo 
+- if we are creating a todo based application , so we need to store the Todo in our DB , before we store the todo in our DB , we need to identify the what will store in our DB
+## Todo
 
 1. Title -> string
-2. createdDate -> date / string 
+2. createdDate -> date / string
 3. createBy -> valid user
 4. MarkAsDone -> true / false
-5. Tag 
+5. Tag
 6. color
 
 
@@ -43,9 +43,9 @@ const userSchema = new mongoose.Schema({})
 export const User = mongoose.model("User", userSchema)
 ```
 - `new mongoose.Schema({})` define the structure of our data
-- `mongoose.model("User", userSchema)` it create a model for our schema 
+- `mongoose.model("User", userSchema)` it create a model for our schema
 - we export it , so we can use later in our code
-- from mongoose we create model as soon as our program run and connection with mongoDB complete it automatically create structure 
+- from mongoose we create model as soon as our program run and connection with mongoDB complete it automatically create structure
 - if our model name is user and it automictically suffix by s so user -> users
 - Converted into plural and lowercase
 
@@ -91,7 +91,7 @@ export const User = mongoose.model("Users", userSchema)
 
 > todo model
 ```js
-import mongoose, { mongo, Mongoose } from "mongoose";
+import mongoose from "mongoose";
 
 const todoSchema = new mongoose.Schema({
     content: {
@@ -131,5 +131,17 @@ createdBy: {
     },
 ```
 - createdBy field is user type or user schema so it has special syntax to include / define in our schemas
-- `type: mongoose.Schema.Types.ObjectId,`  provided by mongoose 
-- `ref: "User",` is compulsory when we use user define model 
+- `type: mongoose.Schema.Types.ObjectId,`  provided by mongoose
+- `ref: "User",` is compulsory when we use user define model
+- practice makes man perfect
+
+
+## images
+- mongodb , DataBase are so powerful and smart it can store the images to DB in buffer or blob format
+- if we store images directly to DB , it makes our DataBase very heavy , DataBase used to store the data not resource directly
+- We can store the images in over backend `/public` folder than save the address or link of the image in DB , alternatively we can use third party services like AWS buckets and their SDK will return url of the resource like 
+- or services like cloudinary
+
+
+
+checkPOINT - https://youtu.be/lA_mNpddN5U?list=PLu71SKxNbfoBGh_8p_NS-ZAh6v7HhYqHW&t=1900
