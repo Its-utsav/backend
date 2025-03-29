@@ -1,0 +1,14 @@
+{
+  "name": "yt-backend",
+  "version": "1.0.0",
+  "description": "Learning about backend by building the profesional backen",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "backend"
+  ],
+  "author": "Utsav Dhimmar",
+  "license": "ISC"
+}
