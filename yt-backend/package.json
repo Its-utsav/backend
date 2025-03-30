@@ -1,19 +1,25 @@
 {
-  "name": "yt-backend",
-  "version": "1.0.0",
-  "description": "Learning about backend by building the profesional backen",
-  "main": "index.js",
-  "type": "module",
-  "scripts": {
-    "dev": "nodemon src/index.js"
-  },
-  "keywords": [
-    "backend"
-  ],
-  "author": "Utsav Dhimmar",
-  "license": "ISC",
-  "devDependencies": {
-    "nodemon": "^3.1.9",
-    "prettier": "^3.5.3"
-  }
+    "name": "yt-backend",
+    "version": "1.0.0",
+    "description": "Learning about backend by building the profesional backen",
+    "main": "index.js",
+    "type": "module",
+    "scripts": {
+        "dev": "nodemon --env-file=.env src/index.js",
+        "start": "node --env-file=.env src/index.js"
+    },
+    "keywords": [
+        "backend"
+    ],
+    "author": "Utsav Dhimmar",
+    "license": "ISC",
+    "devDependencies": {
+        "nodemon": "^3.1.9",
+        "prettier": "^3.5.3"
+    },
+    "dependencies": {
+        "dotenv": "^16.4.7",
+        "express": "^4.21.2",
+        "mongoose": "^8.13.1"
+    }
 }
