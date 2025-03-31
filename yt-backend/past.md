@@ -35,3 +35,5 @@ const asyncHandler = (requestHandler) => {
     };
 };
 ```
+
+- build custom api response and error handling / response for standardize response to the client and maintains the consistency in codebase
