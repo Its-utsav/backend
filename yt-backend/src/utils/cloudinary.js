@@ -17,7 +17,7 @@ const uploadOnCloudinary = async (localPath) => {
     try {
         const fileUploadResponse = await cloudinary.uploader.upload(localPath, {
             resource_type: "auto",
-            allowed_formats: ["gif", "mp4", "mkv", "jpg", "png"]
+            allowed_formats: ["gif", "mp4", "mkv", "jpg", "png"],
         });
         fs.unlinkSync(localPath);
         return fileUploadResponse;
