@@ -14,10 +14,16 @@ cloudinary.config({
 
 const uploadOnCloudinary = async (localPath) => {
     if (!localPath) return null;
+    const imageFormats = ["jpg", "jpeg", "png", "gif", "webp", "bmp", "tiff", "ico", "heic", "avif"];
+    const videoFormats = ["mp4", "webm", "mov", "avi", "flv", "mkv", "3gp", "mpeg", "mpg", "wmv"];
+
+    const cloudinaryAllowedFormats = [...imageFormats, ...videoFormats];
+
+    console.log(cloudinaryAllowedFormats);
     try {
         const fileUploadResponse = await cloudinary.uploader.upload(localPath, {
             resource_type: "auto",
-            allowed_formats: ["gif", "mp4", "mkv", "jpg", "png"],
+            allowed_formats: [""]
         });
         fs.unlinkSync(localPath);
         return fileUploadResponse;
