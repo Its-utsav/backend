@@ -1,8 +1,7 @@
 import { Router } from "express";
 import { registerUser, loginUser } from "../controllers/user.controller.js";
 import { uploadWithMulter } from "../middlewares/multer.middleware.js";
-import { checkExistingUser } from "../middlewares/user.middleware.js"
-import multer from "multer";
+import { checkExistingUser } from "../middlewares/user.middleware.js";
 
 const router = Router();
 

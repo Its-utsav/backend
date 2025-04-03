@@ -42,11 +42,9 @@ const registerUser = asyncHandler(async (req, res) => {
 
     // find user by either email or name
 
-
     if (password.length < 8) {
         throw new ApiError(400, "Password length should at least eight");
     }
-
 
     if (!req.files.coverImage || !req.files.avatar) {
         throw new ApiError(400, "Please upload cover image and avatar image");
@@ -95,6 +93,6 @@ const registerUser = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, createdUser, "User register successfully"));
 });
 
-const loginUser = asyncHandler(async (req, res) => { });
+const loginUser = asyncHandler(async (req, res) => {});
 
 export { registerUser, loginUser };
