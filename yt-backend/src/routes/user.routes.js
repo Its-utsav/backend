@@ -1,6 +1,8 @@
 import { Router } from "express";
 import { registerUser, loginUser } from "../controllers/user.controller.js";
 import { uploadWithMulter } from "../middlewares/multer.middleware.js";
+import { checkExistingUser } from "../middlewares/user.middleware.js"
+import multer from "multer";
 
 const router = Router();
 
@@ -12,6 +14,7 @@ router.route("/register").post(
         { name: "avatar", maxCount: 1 },
         { name: "coverImage", maxCount: 1 },
     ]),
+    checkExistingUser,
     registerUser
 );
 

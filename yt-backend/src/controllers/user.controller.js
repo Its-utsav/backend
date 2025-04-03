@@ -5,7 +5,6 @@ import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import User from "../models/user.model.js";
 
 const registerUser = asyncHandler(async (req, res) => {
-    // console.log(req.files)
     /**
      * 1. get the data like fullName, email , password
      * 2. If any none data is missing the send error with message all three filed is required
@@ -42,15 +41,14 @@ const registerUser = asyncHandler(async (req, res) => {
     }
 
     // find user by either email or name
-    const existingUser = await User.findOne({
-        $or: [{ email }, { username }],
-    });
 
-    if (existingUser) {
-        throw new ApiError(409, "User with name or email already exits");
+
+    if (password.length < 8) {
+        throw new ApiError(400, "Password length should at least eight");
     }
-    // for avatar and cover images
-    if (!req.files) {
+
+
+    if (!req.files.coverImage || !req.files.avatar) {
         throw new ApiError(400, "Please upload cover image and avatar image");
     }
 
@@ -97,6 +95,6 @@ const registerUser = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, createdUser, "User register successfully"));
 });
 
-const loginUser = asyncHandler(async (req, res) => {});
+const loginUser = asyncHandler(async (req, res) => { });
 
 export { registerUser, loginUser };

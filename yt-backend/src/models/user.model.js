@@ -35,7 +35,7 @@ const userSchema = new Schema(
         },
         password: {
             type: String,
-            required: [true, "Password is required"],
+            required: [true, "Password is required"]
         },
         refershToken: {
             type: String,
@@ -54,7 +54,7 @@ userSchema.pre("save", async function (next) {
     // we need to hash password only when password is added first time or only modified
     // password encyrption takes time
     if (!this.isModified("password")) return next();
-    this.password = bcrypt.hash(this.password, 10);
+    this.password = await bcrypt.hash(this.password, 10); // await is missing
     next();
 });
 

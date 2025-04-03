@@ -6,4 +6,4 @@
 - source code :- https://github.com/hiteshchoudhary/chai-backend/tree/main/src
 
 
-# TODO :- After the  competition of this backend move entire code based to Typescript use zod for validation
+# TODO :- After the  competition of this backend move entire code base to Typescript use Zod for validation
