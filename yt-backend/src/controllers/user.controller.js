@@ -93,6 +93,105 @@ const registerUser = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, createdUser, "User register successfully"));
 });
 
-const loginUser = asyncHandler(async (req, res) => {});
+const generateRefershTokenAndAccessToken = async (userID) => {
+    try {
+        const user = await User.findById(userID);
+        const accessToken = user.generateAccessToken();
+        const refershToken = user.generateRefershToken();
+        user.refershToken = refershToken; // add into user object now need to save
+        // Password , email , username like fileds are required so we need to give that values but we are generating the refershToken and just save it
+        // By default mongoose will try to validate it so we need to stop it .
+        await user.save({ validateBeforeSave: false });
+        return { accessToken, refershToken };
+    } catch (error) {
+        throw new ApiError(
+            500,
+            "Error while generating the access token and referesh token"
+        );
+    }
+};
 
-export { registerUser, loginUser };
+const loginUser = asyncHandler(async (req, res) => {
+    /**
+     * 1. get data from front end like  email , password
+     * 2. Verify that data by checking the username and email
+     * 3. Verify the password
+     * 4. Generate access token and refresh token send to user by storing into cookie
+     * 5. send response
+     */
+    const { email, password } = req.body;
+    const existingUser = await User.findOne({
+        email,
+    });
+
+    if (!existingUser) {
+        throw new ApiError(400, `User does not exist`);
+    }
+
+    const passWordcheck = await existingUser.isPasswordCorrect(password);
+    if (!passWordcheck) {
+        throw new ApiError(401, `Invalid user password`);
+    }
+
+    const { accessToken, refershToken } =
+        await generateRefershTokenAndAccessToken(existingUser._id);
+
+    // send to cookie
+    // we have user document with password , email etc ...
+    // but we do not send password to cookie
+
+    const loggedInUser = await User.findById(existingUser._id).select(
+        "-password -refershToken"
+    );
+
+    const options = {
+        httpOnly: true,
+        secure: true,
+    };
+
+    return res
+        .status(200)
+        .cookie("accessToken", accessToken, options)
+        .cookie("refershToken", refershToken, options)
+        .json(
+            new ApiResponse(
+                200,
+                { loggedInUser, accessToken, refershToken }, // consider as good
+                "User logged in successfully"
+            )
+        );
+});
+
+const logoutUser = asyncHandler(async (req, res) => {
+    /**
+     * 1. Clear cookies
+     * 2. remove refersh token , but how we need to figure out user and than remove the refresh token
+     * 3. one way is that get user email from form and logout but anyone user can logout anyone LOL
+     */
+
+    const id = req.user._id;
+    await User.findByIdAndUpdate(
+        id,
+        {
+            $set: {
+                refershToken: null,
+            },
+        },
+        {
+            new: true,
+        }
+    );
+
+    const options = {
+        httpOnly: true,
+        secure: true,
+    };
+
+    return res
+        .status(200)
+        .clearCookie("accessToken", options)
+        .clearCookie("refershToken", options)
+        .json(new ApiResponse(200, "User logged out"));
+});
+
+export { registerUser, loginUser, logoutUser };

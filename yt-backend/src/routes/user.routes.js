@@ -1,8 +1,14 @@
 import { Router } from "express";
-import { registerUser, loginUser } from "../controllers/user.controller.js";
+import {
+    registerUser,
+    loginUser,
+    logoutUser,
+} from "../controllers/user.controller.js";
 import { uploadWithMulter } from "../middlewares/multer.middleware.js";
 import { checkExistingUser } from "../middlewares/user.middleware.js";
 
+import multer from "multer";
+import { verifyUser } from "../middlewares/auth.middleware.js";
 const router = Router();
 
 // /api/v1/ prefix
@@ -18,6 +24,8 @@ router.route("/register").post(
 );
 
 // /api/v1/login
-router.route("/login").post(loginUser);
+const upload = multer().none();
+router.route("/login").post(upload, loginUser);
 
+router.route("/logout").post(verifyUser, logoutUser);
 export default router;
