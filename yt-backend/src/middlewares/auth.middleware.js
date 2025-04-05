@@ -9,7 +9,7 @@ export const verifyUser = asyncHandler(async (req, _, next) => {
         // Our client might be mobile app
         const token =
             req.cookies?.accessToken ||
-            req.header("Authorization").replace("Bearer ", "");
+            req.header("Authorization")?.replace("Bearer ", "");
 
         if (!token) {
             throw new ApiError(401, "Unauthorized request");
@@ -22,7 +22,7 @@ export const verifyUser = asyncHandler(async (req, _, next) => {
         }
 
         const userInfo = await User.findById(decodeInfo._id).select(
-            "-password -refershToken"
+            "-password -refreshToken"
         );
 
         if (!userInfo) {

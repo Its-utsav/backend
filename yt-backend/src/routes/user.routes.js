@@ -3,6 +3,7 @@ import {
     registerUser,
     loginUser,
     logoutUser,
+    refreshAccessToken
 } from "../controllers/user.controller.js";
 import { uploadWithMulter } from "../middlewares/multer.middleware.js";
 import { checkExistingUser } from "../middlewares/user.middleware.js";
@@ -28,4 +29,6 @@ const upload = multer().none();
 router.route("/login").post(upload, loginUser);
 
 router.route("/logout").post(verifyUser, logoutUser);
+router.route("/refreshToken").post(refreshAccessToken)
+
 export default router;
