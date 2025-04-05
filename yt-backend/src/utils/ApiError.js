@@ -1,4 +1,11 @@
 export class ApiError extends Error {
+    /**
+     *
+     * @param {number} statusCode - status code that send to the client
+     * @param {*} message
+     * @param {*} errors
+     * @param {*} errorStack
+     */
     constructor(
         statusCode,
         message = "Something went wrong",

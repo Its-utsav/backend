@@ -1,4 +1,4 @@
-import asyncHandler from "../utils/asycnHandler.js";
+import asyncHandler from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
@@ -120,6 +120,11 @@ const loginUser = asyncHandler(async (req, res) => {
      * 5. send response
      */
     const { email, password } = req.body;
+
+    if (!email) {
+        throw new ApiError(401, "Please provide email for login");
+    }
+
     const existingUser = await User.findOne({
         email,
     });

@@ -1,13 +1,14 @@
 import jwt from "jsonwebtoken";
 import User from "../models/user.model.js";
 import { ApiError } from "../utils/ApiError.js";
-import asyncHandler from "../utils/asycnHandler.js";
+import asyncHandler from "../utils/asyncHandler.js";
 
+// If we do not need to use any paramter any we can go with _ which is optional
 export const verifyUser = asyncHandler(async (req, _, next) => {
     try {
-        // Our client might be mobile app 
+        // Our client might be mobile app
         const token =
-            req.cookie?.accessToken ||
+            req.cookies?.accessToken ||
             req.header("Authorization").replace("Bearer ", "");
 
         if (!token) {
@@ -30,6 +31,6 @@ export const verifyUser = asyncHandler(async (req, _, next) => {
         req.user = userInfo;
         next();
     } catch (error) {
-        throw new ApiError(401, "Invalid access token")
+        throw new ApiError(401, "Invalid access token");
     }
 });
