@@ -5,7 +5,7 @@
     "main": "index.js",
     "type": "module",
     "scripts": {
-        "dev": "nodemon --env-file=.env src/index.js",
+        "dev": "nodemon --watch src --env-file=.env src/index.js",
         "start": "node --env-file=.env src/index.js",
         "format": "npx prettier --write ."
     },

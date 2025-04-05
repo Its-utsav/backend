@@ -8,7 +8,7 @@ const checkExistingUser = asyncHandler(async (req, res, next) => {
     const existingUser = await User.findOne({
         $or: [{ email }, { username }],
     });
-
+    console.log(existingUser);
     if (existingUser) {
         if (req.files) {
             if (req.files.avatar) unlinkSync(req.files.avatar[0].path);

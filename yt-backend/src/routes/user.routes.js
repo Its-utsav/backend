@@ -3,7 +3,12 @@ import {
     registerUser,
     loginUser,
     logoutUser,
-    refreshAccessToken
+    refreshAccessToken,
+    changePassword,
+    getCurrentUser,
+    updateFullNameAndEmail,
+    avatarUpdate,
+    coverImageUpdate,
 } from "../controllers/user.controller.js";
 import { uploadWithMulter } from "../middlewares/multer.middleware.js";
 import { checkExistingUser } from "../middlewares/user.middleware.js";
@@ -29,6 +34,15 @@ const upload = multer().none();
 router.route("/login").post(upload, loginUser);
 
 router.route("/logout").post(verifyUser, logoutUser);
-router.route("/refreshToken").post(refreshAccessToken)
+router.route("/refreshToken").post(refreshAccessToken);
+router.route("/passwordChange").post(verifyUser, getCurrentUser);
+router.route("/currentUser").post(verifyUser, changePassword);
+router.route("/updateDetails").patch(verifyUser, updateFullNameAndEmail);
+router
+    .route("/updateAvatar")
+    .patch(verifyUser, uploadWithMulter.single("avatar"), avatarUpdate);
+router
+    .route("/updateCoverImage")
+    .patch(verifyUser, uploadWithMulter.single("coverImage"), coverImageUpdate);
 
 export default router;

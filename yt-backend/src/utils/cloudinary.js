@@ -1,5 +1,6 @@
 import { v2 as cloudinary } from "cloudinary";
 import fs from "fs";
+import { ApiError } from "./ApiError.js";
 /*
 - first file will store in our local server for temparary
 - after we upload that temparary file to cloudinary
@@ -19,6 +20,7 @@ const uploadOnCloudinary = async (localPath) => {
             resource_type: "auto",
         });
         fs.unlinkSync(localPath);
+        console.log(fileUploadResponse);
         return fileUploadResponse;
     } catch (error) {
         fs.unlinkSync(localPath);
@@ -27,4 +29,12 @@ const uploadOnCloudinary = async (localPath) => {
     }
 };
 
-export { uploadOnCloudinary };
+const deleteFromCloudinary = async (publicID) => {
+    await cloudinary.uploader.destroy(publicID, (error) => {
+        if (error) {
+            throw new ApiError(500, "Exising file could not be deleted");
+        }
+    });
+};
+
+export { uploadOnCloudinary, deleteFromCloudinary };
