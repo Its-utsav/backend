@@ -9,6 +9,7 @@ import {
     updateFullNameAndEmail,
     avatarUpdate,
     coverImageUpdate,
+    getUserChannelProfile,
 } from "../controllers/user.controller.js";
 import { uploadWithMulter } from "../middlewares/multer.middleware.js";
 import { checkExistingUser } from "../middlewares/user.middleware.js";
@@ -44,5 +45,7 @@ router
 router
     .route("/updateCoverImage")
     .patch(verifyUser, uploadWithMulter.single("coverImage"), coverImageUpdate);
+
+router.get("/c/:username", getUserChannelProfile);
 
 export default router;
