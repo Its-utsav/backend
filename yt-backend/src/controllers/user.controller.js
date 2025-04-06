@@ -319,8 +319,8 @@ const avatarUpdate = asyncHandler(async (req, res) => {
             throw new ApiError(500, "Unable to retrive old url");
         }
         const publicId = getPublicIDByURL(user.avatar);
-        await deleteFromCloudinary(publicId);
         const avatar = await uploadOnCloudinary(avatarPath);
+        await deleteFromCloudinary(publicId);
 
         if (!avatar) {
             throw new ApiError(400, "Unable to upload avatar on cloudinary");
@@ -366,8 +366,8 @@ const coverImageUpdate = asyncHandler(async (req, res) => {
             throw new ApiError(500, "Unable to retrive old url");
         }
         const publicId = getPublicIDByURL(user.coverImage);
-        await deleteFromCloudinary(publicId);
         const coverImage = await uploadOnCloudinary(coverImagePath);
+        await deleteFromCloudinary(publicId);
 
         if (!coverImage) {
             throw new ApiError(

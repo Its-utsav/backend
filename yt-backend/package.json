@@ -15,6 +15,7 @@
     "author": "Utsav Dhimmar",
     "license": "ISC",
     "devDependencies": {
+        "@types/express": "^5.0.1",
         "nodemon": "^3.1.9",
         "prettier": "^3.5.3"
     },
