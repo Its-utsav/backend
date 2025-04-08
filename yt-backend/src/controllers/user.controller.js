@@ -1,12 +1,13 @@
-import asyncHandler from "../utils/asyncHandler.js";
+import jwt from "jsonwebtoken";
+import mongoose from "mongoose";
+import User from "../models/user.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
+import asyncHandler from "../utils/asyncHandler.js";
 import {
     deleteFromCloudinary,
     uploadOnCloudinary,
 } from "../utils/cloudinary.js";
-import User from "../models/user.model.js";
-import jwt from "jsonwebtoken";
 
 const options = {
     httpOnly: true,
@@ -419,7 +420,9 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
 
     const channel = await User.aggregate([
         {
-            $match: { username: username?.toLowerCase() },
+            $match: {
+                username: username?.toLowerCase(),
+            },
         },
         {
             // find user who subscribe this channel - followers
@@ -432,7 +435,7 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
         },
         {
             // find following
-            // find the all channel that is subscried by this user
+            // find the all channel that is subscried by this user / channel
             $lookup: {
                 from: "subscriptions",
                 localField: "_id",
@@ -478,18 +481,90 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
 
     return res
         .status(200)
-        .json(new ApiResponse(200, channel[0], `Data fetched for ${username}`));
+        .json(
+            new ApiResponse(
+                200,
+                channel[0],
+                `Data fetched for ${username} channel`
+            )
+        );
+});
+
+const getWatchHistory = asyncHandler(async (req, res) => {
+    const userId = req.user?._id;
+
+    const user = await User.aggregate([
+        {
+            $match: {
+                _id: new mongoose.Types.ObjectId(userId),
+            },
+        },
+        {
+            // get a history
+            $lookup: {
+                from: "videos",
+                localField: "watchHistory",
+                foreignField: "_id",
+                as: "watchHistory",
+                pipeline: [
+                    {
+                        $lookup: {
+                            from: "users",
+                            localField: "owner",
+                            foreignField: "_id",
+                            as: "owner",
+                            pipeline: [
+                                {
+                                    $project: {
+                                        username: 1,
+                                        fullName: 1,
+                                        avatar: 1,
+                                    },
+                                },
+                            ],
+                        },
+                    },
+                    // {
+                    //     $project: {
+                    //         username: 1,
+                    //         avatar: 1,
+                    //         fullName: 1
+                    //     }
+                    // }
+                    {
+                        $addFields: {
+                            owner: {
+                                $first: "$owner",
+                            },
+                        },
+                    },
+                ],
+            },
+        },
+    ]);
+
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(
+                200,
+                user[0].watchHistory,
+                "Watch history fetched successfully"
+            )
+        );
 });
 
 export {
-    registerUser,
+    avatarUpdate,
+    changePassword,
+    coverImageUpdate,
+    getCurrentUser,
+    getUserChannelProfile,
+    getWatchHistory,
     loginUser,
     logoutUser,
     refreshAccessToken,
-    changePassword,
-    getCurrentUser,
+    registerUser,
     updateFullNameAndEmail,
-    avatarUpdate,
-    coverImageUpdate,
-    getUserChannelProfile,
+    getPublicIDByURL,
 };

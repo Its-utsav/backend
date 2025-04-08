@@ -2,6 +2,9 @@
 todo.md
 /node_modules
 /.vscode
+/public
 package.json
 package-lock.json
 .prettierrc
+past.md
+temp.txt
