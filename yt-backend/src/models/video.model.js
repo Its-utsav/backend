@@ -36,8 +36,8 @@ const videoSchema = new Schema(
             required: true,
         },
         isPublish: {
-            values: [true, false],
-            deafult: true,
+            type: Boolean,
+            default: true,
         },
     },
     { timestamps: true }
