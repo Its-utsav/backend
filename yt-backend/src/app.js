@@ -28,8 +28,12 @@ app.use(cookieParser());
 
 // imports routes
 import userRoutes from "./routes/user.routes.js";
+import tweetRoutes from "./routes/tweet.routes.js";
+import commentRoutes from "./routes/comment.routes.js";
 
 // routes decelration
 app.use("/api/v1/users", userRoutes);
+app.use("/api/v1/tweets", tweetRoutes);
+app.use("/api/v1/comments", commentRoutes);
 
 export default app;

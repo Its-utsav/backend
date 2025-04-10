@@ -413,7 +413,6 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
      */
 
     const username = req.params.username;
-
     if (!username) {
         throw new ApiError(404, "username is missing");
     }
@@ -559,6 +558,7 @@ export {
     changePassword,
     coverImageUpdate,
     getCurrentUser,
+    getPublicIDByURL,
     getUserChannelProfile,
     getWatchHistory,
     loginUser,
@@ -566,5 +566,4 @@ export {
     refreshAccessToken,
     registerUser,
     updateFullNameAndEmail,
-    getPublicIDByURL,
 };
