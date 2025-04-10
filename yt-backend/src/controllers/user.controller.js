@@ -7,6 +7,7 @@ import asyncHandler from "../utils/asyncHandler.js";
 import {
     deleteFromCloudinary,
     uploadOnCloudinary,
+    getPublicIDByURL,
 } from "../utils/cloudinary.js";
 
 const options = {
@@ -304,8 +305,6 @@ const updateFullNameAndEmail = asyncHandler(async (req, res) => {
         })
     );
 });
-
-const getPublicIDByURL = (url) => url.split("/").pop().split(".")[0];
 
 const avatarUpdate = asyncHandler(async (req, res) => {
     try {

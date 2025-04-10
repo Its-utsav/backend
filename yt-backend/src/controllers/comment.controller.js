@@ -122,7 +122,7 @@ const deleteComment = asyncHandler(async (req, res) => {
         throw new ApiError(403, "You can only delete your comment only");
     }
 
-    await comment.remove();
+    await comment.deleteOne();
 
     return res
         .status(204)

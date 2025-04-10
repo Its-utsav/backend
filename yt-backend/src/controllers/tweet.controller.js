@@ -127,6 +127,7 @@ const deleteTweet = asyncHandler(async (req, res) => {
         );
     }
 
+    await tweet.deleteOne();
     return res
         .status(204)
         .json(new ApiResponse(200, "Tweet deleted successfuly"));

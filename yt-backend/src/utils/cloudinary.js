@@ -18,9 +18,10 @@ const uploadOnCloudinary = async (localPath) => {
     try {
         const fileUploadResponse = await cloudinary.uploader.upload(localPath, {
             resource_type: "auto",
+            media_metadata: true,
         });
         fs.unlinkSync(localPath);
-        console.log(fileUploadResponse);
+        // console.log(fileUploadResponse);
         return fileUploadResponse;
     } catch (error) {
         fs.unlinkSync(localPath);
@@ -28,6 +29,8 @@ const uploadOnCloudinary = async (localPath) => {
         return null;
     }
 };
+
+const getPublicIDByURL = (url) => url.split("/").pop().split(".")[0];
 
 const deleteFromCloudinary = async (publicID) => {
     await cloudinary.uploader.destroy(publicID, (error) => {
@@ -37,4 +40,4 @@ const deleteFromCloudinary = async (publicID) => {
     });
 };
 
-export { uploadOnCloudinary, deleteFromCloudinary };
+export { uploadOnCloudinary, deleteFromCloudinary, getPublicIDByURL };

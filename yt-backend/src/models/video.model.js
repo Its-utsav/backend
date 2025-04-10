@@ -7,7 +7,7 @@ const videoSchema = new Schema(
             type: String,
             required: true,
         },
-        thumbnail: {
+        thumbnailUrl: {
             type: String,
             required: true,
         },
@@ -19,9 +19,9 @@ const videoSchema = new Schema(
         title: {
             type: String,
             required: true,
-            min: [10, "Title with at least 10 character"],
+            min: [10, "Title with at least 5 character"],
         },
-        descriprion: {
+        description: {
             type: String,
         },
         duration: {
