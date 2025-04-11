@@ -124,7 +124,6 @@ const updateVideo = asyncHandler(async (req, res) => {
     }
 
     const { title, description } = req.body;
-    // console.log(description, title);
     if (title && title?.trim() == "") {
         throw new ApiError(400, "Title can not be empty");
     }
@@ -136,7 +135,7 @@ const updateVideo = asyncHandler(async (req, res) => {
         video.thumbnailUrl = newThumbnailUrl.secure_url;
     }
     video.title = title;
-    video.description = description; // todo need to fix
+    video.description = description?.trim() || video.description; // todo need to fix
     const updatedVideo = await video.save();
     return res
         .status(200)
@@ -163,14 +162,13 @@ const deleteVideo = asyncHandler(async (req, res) => {
 
     if (video.owner._id.toString() != req.user._id.toString()) {
         throw new ApiError(401, "You can't delete other's video ");
-
     }
 
     const delVideo = await video.deleteOne();
 
-    return res.status(200).json(
-        new ApiResponse(200, delVideo, "Video deleted")
-    )
+    return res
+        .status(200)
+        .json(new ApiResponse(200, delVideo, "Video deleted"));
 });
 
 export { deleteVideo, getAllVideos, getVideoById, updateVideo, uploadVideo };
