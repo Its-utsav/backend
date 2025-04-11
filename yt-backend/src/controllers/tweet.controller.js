@@ -69,6 +69,7 @@ const updateTweet = asyncHandler(async (req, res) => {
         throw new ApiError(401, "Tweet Id not provided");
     }
     const { tweetContent } = req.body;
+
     if (!tweetContent || tweetContent?.trim() === "") {
         throw new ApiError(400, "Tweet content can not be empty");
     }
@@ -129,8 +130,31 @@ const deleteTweet = asyncHandler(async (req, res) => {
 
     await tweet.deleteOne();
     return res
-        .status(204)
+        .status(200)
         .json(new ApiResponse(200, "Tweet deleted successfuly"));
 });
 
-export { createTweet, deleteTweet, getAllTweets, getUserTweets, updateTweet };
+const getTweetByTweetId = asyncHandler(async (req, res) => {
+    const { tweetId } = req.params;
+
+    if (!tweetId) {
+        throw new ApiError(401, "Tweet Id not provided");
+    }
+    const tweet = await Tweet.findById(tweetId);
+
+    if (!tweet) {
+        throw new ApiError(404, "Tweets not found");
+    }
+    return res
+        .status(200)
+        .json(new ApiResponse(200, tweet, "Tweet fetched ..."));
+});
+
+export {
+    createTweet,
+    deleteTweet,
+    getAllTweets,
+    getUserTweets,
+    updateTweet,
+    getTweetByTweetId,
+};

@@ -61,6 +61,9 @@ const getVideoComments = asyncHandler(async (req, res) => {
             },
         },
     ]);
+    if (comments.length === 0) {
+        throw new ApiError(400, "No Comments found");
+    }
     return res
         .status(200)
         .json(new ApiResponse(200, comments, "Comments fetched successfully"));
@@ -125,7 +128,7 @@ const deleteComment = asyncHandler(async (req, res) => {
     await comment.deleteOne();
 
     return res
-        .status(204)
+        .status(200)
         .json(new ApiResponse(200, {}, "Comment deleted successfully"));
 });
 

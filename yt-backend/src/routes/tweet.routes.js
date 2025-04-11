@@ -3,6 +3,7 @@ import {
     createTweet,
     deleteTweet,
     getAllTweets,
+    getTweetByTweetId,
     getUserTweets,
     updateTweet,
 } from "../controllers/tweet.controller.js";
@@ -22,6 +23,10 @@ router.use(verifyUser);
 
 router.route("/").post(createTweet).get(getAllTweets);
 router.route("/user/:userId").get(getUserTweets);
-router.route("/:tweetId").patch(updateTweet).delete(deleteTweet);
+router
+    .route("/:tweetId")
+    .get(getTweetByTweetId)
+    .patch(updateTweet)
+    .delete(deleteTweet);
 
 export default router;

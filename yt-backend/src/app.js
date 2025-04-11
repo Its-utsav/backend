@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-
+import multer from "multer";
 const app = express();
 
 app.use(
@@ -9,6 +9,8 @@ app.use(
         origin: process.env.CORS_ORIGIN,
     })
 );
+
+app.use(multer().none());
 
 app.use(
     express.json({
