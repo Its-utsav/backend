@@ -20,7 +20,7 @@ import { verifyUser } from "../middlewares/auth.middleware.js";
 const router = Router();
 
 // /api/v1/ prefix
-router.use(multer().none());
+// router.use(multer().none());
 // /api/v1/register
 router.route("/register").post(
     uploadWithMulter.fields([
