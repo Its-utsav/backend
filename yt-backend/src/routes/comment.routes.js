@@ -6,9 +6,9 @@ import {
     updateComment,
 } from "../controllers/comment.controller.js";
 import { verifyUser } from "../middlewares/auth.middleware.js";
-
+import multer from "multer";
 const router = Router();
-
+router.use(multer().none());
 /**
  * 1. Create Comment
  * 2. get all Comments by user

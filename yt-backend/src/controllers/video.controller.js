@@ -15,11 +15,7 @@ const getAllVideos = asyncHandler(async (req, res) => {
     return res
         .status(200)
         .json(
-            new ApiResponse(
-                200,
-                { videos: allVideos },
-                "All videos fetched succesfully"
-            )
+            new ApiResponse(200, allVideos, "All videos fetched succesfully")
         );
 });
 

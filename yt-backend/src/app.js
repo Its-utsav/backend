@@ -10,8 +10,6 @@ app.use(
     })
 );
 
-app.use(multer().none());
-
 app.use(
     express.json({
         limit: "16kb",

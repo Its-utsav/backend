@@ -20,7 +20,7 @@ import { verifyUser } from "../middlewares/auth.middleware.js";
 const router = Router();
 
 // /api/v1/ prefix
-
+router.use(multer().none());
 // /api/v1/register
 router.route("/register").post(
     uploadWithMulter.fields([
@@ -32,8 +32,7 @@ router.route("/register").post(
 );
 
 // /api/v1/login
-const upload = multer().none();
-router.route("/login").post(upload, loginUser);
+router.route("/login").post(loginUser);
 
 router.route("/logout").post(verifyUser, logoutUser);
 router.route("/refreshToken").post(refreshAccessToken);

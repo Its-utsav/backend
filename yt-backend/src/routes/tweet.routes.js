@@ -8,7 +8,7 @@ import {
     updateTweet,
 } from "../controllers/tweet.controller.js";
 import { verifyUser } from "../middlewares/auth.middleware.js";
-
+import multer from "multer";
 const router = Router();
 
 /**
@@ -18,7 +18,7 @@ const router = Router();
  */
 
 // all the operation can perform by the verfiy user
-
+router.use(multer().none());
 router.use(verifyUser);
 
 router.route("/").post(createTweet).get(getAllTweets);
