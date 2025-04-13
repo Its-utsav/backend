@@ -12,7 +12,10 @@ import {
     registerUser,
     updateFullNameAndEmail,
 } from "../controllers/user.controller.js";
-import { uploadWithMulter } from "../middlewares/multer.middleware.js";
+import {
+    formData,
+    uploadWithMulter,
+} from "../middlewares/multer.middleware.js";
 import { checkExistingUser } from "../middlewares/user.middleware.js";
 
 import multer from "multer";
@@ -20,7 +23,6 @@ import { verifyUser } from "../middlewares/auth.middleware.js";
 const router = Router();
 
 // /api/v1/ prefix
-// router.use(multer().none());
 // /api/v1/register
 router.route("/register").post(
     uploadWithMulter.fields([
@@ -32,13 +34,15 @@ router.route("/register").post(
 );
 
 // /api/v1/login
-router.route("/login").post(loginUser);
+router.route("/login").post(formData, loginUser);
 
 router.route("/logout").post(verifyUser, logoutUser);
 router.route("/refreshToken").post(refreshAccessToken);
-router.route("/passwordChange").post(verifyUser, changePassword);
+router.route("/passwordChange").post(verifyUser, formData, changePassword);
 router.route("/currentUser").get(verifyUser, getCurrentUser);
-router.route("/updateDetails").patch(verifyUser, updateFullNameAndEmail);
+router
+    .route("/updateDetails")
+    .patch(verifyUser, formData, updateFullNameAndEmail);
 router
     .route("/updateAvatar")
     .patch(verifyUser, uploadWithMulter.single("avatar"), avatarUpdate);

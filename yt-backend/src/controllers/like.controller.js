@@ -1,17 +1,18 @@
+import { isValidObjectId } from "mongoose";
+import Comment from "../models/comments.model.js";
 import Like from "../models/likes.model.js";
-import Video from "../models/video.model.js";
 import Tweet from "../models/tweet.model.js";
+import Video from "../models/video.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import asyncHandler from "../utils/asyncHandler.js";
-import Comment from "../models/comments.model.js";
 
 // /toggle/:videoId
 const toggleLikeOnVideo = asyncHandler(async (req, res) => {
     // like -> dislike
     const { videoId } = req.params;
-    if (!videoId) {
-        throw new ApiError(400, "Video Id not provided");
+    if (!videoId || !isValidObjectId(videoId)) {
+        throw new ApiError(400, "Video Id not provided or invalid");
     }
 
     const video = await Video.findById(videoId);
@@ -49,9 +50,8 @@ const toggleLikeOnVideo = asyncHandler(async (req, res) => {
 // /toggle/:tweetId
 const toggleLikeOnTweet = asyncHandler(async (req, res) => {
     const { tweetId } = req.params;
-
-    if (!tweetId) {
-        throw new ApiError(400, "Tweet Id not provided");
+    if (!tweetId || !isValidObjectId(tweetId)) {
+        throw new ApiError(400, "Tweet Id not provided or invalid");
     }
 
     const tweet = await Tweet.findById(tweetId);
@@ -89,9 +89,8 @@ const toggleLikeOnTweet = asyncHandler(async (req, res) => {
 // /toggle/:commentId
 const toggleLikeOnComment = asyncHandler(async (req, res) => {
     const { commentId } = req.params;
-
-    if (!commentId) {
-        throw new ApiError(400, "comment Id not provided");
+    if (!commentId || !isValidObjectId(commentId)) {
+        throw new ApiError(400, "comment Id not provided or invalid");
     }
 
     const comment = await Comment.findById(commentId);
@@ -163,8 +162,8 @@ const getLikedVideos = asyncHandler(async (req, res) => {
 });
 
 export {
-    toggleLikeOnComment,
+    getLikedVideos, toggleLikeOnComment,
     toggleLikeOnTweet,
-    toggleLikeOnVideo,
-    getLikedVideos,
+    toggleLikeOnVideo
 };
+

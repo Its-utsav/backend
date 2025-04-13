@@ -10,3 +10,4 @@ export const storage = multer.diskStorage({
 });
 
 export const uploadWithMulter = multer({ storage });
+export const formData = multer().none();

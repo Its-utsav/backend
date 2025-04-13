@@ -9,11 +9,10 @@ import {
     updatePlaylist,
 } from "../controllers/playlist.controller.js";
 import { verifyUser } from "../middlewares/auth.middleware.js";
+import { formData } from "../middlewares/multer.middleware.js";
 const router = Router();
 
-// eg playlist id 67f920cd54351d07213e3a26
-
-router.use(verifyUser);
+router.use(verifyUser, formData);
 
 router.route("/").post(createPlaylist);
 router.route("/:userId").get(getUserPlaylist);

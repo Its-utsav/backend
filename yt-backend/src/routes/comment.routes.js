@@ -6,9 +6,8 @@ import {
     updateComment,
 } from "../controllers/comment.controller.js";
 import { verifyUser } from "../middlewares/auth.middleware.js";
-import multer from "multer";
+import { formData } from "../middlewares/multer.middleware.js";
 const router = Router();
-router.use(multer().none());
 /**
  * 1. Create Comment
  * 2. get all Comments by user
@@ -17,9 +16,9 @@ router.use(multer().none());
 
 // all the operation can perform by the verfiy user
 
-router.use(verifyUser);
+router.use(verifyUser, formData);
 
-router.route("/:videoid").get(getVideoComments).post(createComment);
-router.route("/c/:commentid").patch(updateComment).delete(deleteComment);
+router.route("/:videoId").get(getVideoComments).post(createComment);
+router.route("/c/:commentId").patch(updateComment).delete(deleteComment);
 
 export default router;

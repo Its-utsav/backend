@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import { isValidObjectId } from "mongoose";
 import Playlist from "../models/playlist.model.js";
 import User from "../models/user.model.js";
 import Video from "../models/video.model.js";
@@ -33,10 +33,10 @@ const createPlaylist = asyncHandler(async (req, res) => {
 // userId
 const getUserPlaylist = asyncHandler(async (req, res) => {
     const { userId } = req.params;
-    if (!userId) {
+    if (!userId || !isValidObjectId(userId)) {
         throw new ApiError(
             400,
-            "Used Id is missing , unable to get user's playlist"
+            "Used Id is missing or invalid , unable to get user's playlist"
         );
     }
 
@@ -47,7 +47,7 @@ const getUserPlaylist = asyncHandler(async (req, res) => {
     }
 
     const userPlaylist = await Playlist.find({
-        owner: new mongoose.Types.ObjectId(userId),
+        owner: userId,
     });
 
     if (!userPlaylist || userPlaylist.length == 0) {
@@ -68,8 +68,8 @@ const getUserPlaylist = asyncHandler(async (req, res) => {
 // :playlistId
 const getPlaylist = asyncHandler(async (req, res) => {
     const { playlistId } = req.params;
-    if (!playlistId) {
-        throw new ApiError(400, "Playlist Id is not provided");
+    if (!playlistId || !isValidObjectId(playlistId)) {
+        throw new ApiError(400, "Playlist Id is not provided or invalid");
     }
 
     const playlist = await Playlist.findById(playlistId);
@@ -83,13 +83,13 @@ const getPlaylist = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, playlist, "Playlist fetched successfully"));
 });
 
-// name and description: {
+// name and description
 const updatePlaylist = asyncHandler(async (req, res) => {
     const { playlistId } = req.params;
     const { name, description } = req.body;
-    console.log(name, description);
-    if (!playlistId) {
-        throw new ApiError(400, "Playlist id not provided");
+
+    if (!playlistId || !isValidObjectId(playlistId)) {
+        throw new ApiError(400, "Playlist id not provided or invalid");
     }
 
     if (name && name?.trim() == "") {
@@ -127,8 +127,8 @@ const updatePlaylist = asyncHandler(async (req, res) => {
 const deletePlaylist = asyncHandler(async (req, res) => {
     const { playlistId } = req.params;
 
-    if (!playlistId) {
-        throw new ApiError(400, "Playlist id not provided");
+    if (!playlistId || !isValidObjectId(playlistId)) {
+        throw new ApiError(400, "Playlist id not provided or invalid");
     }
 
     const delPlaylist = await Playlist.findByIdAndDelete(playlistId);
@@ -145,9 +145,12 @@ const deletePlaylist = asyncHandler(async (req, res) => {
 // /:videoId/:playlistId
 const addVideoToPlaylist = asyncHandler(async (req, res) => {
     const { videoId, playlistId } = req.params;
-    if (!videoId || !playlistId) {
-        throw new ApiError(400, "Video Id or playlist Id not provided");
-    }
+
+    if (!videoId || !isValidObjectId(videoId))
+        throw new ApiError(400, "Video Id not provided or invalid");
+
+    if (!playlistId || !isValidObjectId(playlistId))
+        throw new ApiError(400, "Playlist Id not provided or invalid");
 
     const playlist = await Playlist.findById(playlistId);
     if (!playlist) {
@@ -163,8 +166,18 @@ const addVideoToPlaylist = asyncHandler(async (req, res) => {
         throw new ApiError(400, "Video alredy in playlist");
     }
 
-    playlist.videos.push(video);
-    const updatedPlaylist = await playlist.save();
+    const updatedPlaylist = await Playlist.findByIdAndUpdate(
+        playlistId,
+        {
+            $push: {
+                videos: video,
+            },
+        },
+        {
+            new: true,
+        }
+    );
+
     return res
         .status(200)
         .json(
@@ -178,9 +191,12 @@ const addVideoToPlaylist = asyncHandler(async (req, res) => {
 
 const deleteVideoToPlaylist = asyncHandler(async (req, res) => {
     const { videoId, playlistId } = req.params;
-    if (!videoId || !playlistId) {
-        throw new ApiError(400, "Video Id or playlist Id not provided");
-    }
+
+    if (!videoId || !isValidObjectId(videoId))
+        throw new ApiError(400, "Video Id not provided or invalid");
+
+    if (!playlistId || !isValidObjectId(playlistId))
+        throw new ApiError(400, "Playlist Id not provided or invalid");
 
     const playlist = await Playlist.findById(playlistId);
     if (!playlist) {
@@ -191,9 +207,17 @@ const deleteVideoToPlaylist = asyncHandler(async (req, res) => {
         throw new ApiError(400, "Video not found with given id");
     }
 
-    const index = playlist.videos.indexOf(video._id);
-    playlist.videos.splice(index, 1);
-    const updatedPlaylist = await playlist.save();
+    const updatedPlaylist = await Playlist.findByIdAndUpdate(
+        playlistId,
+        {
+            $pull: {
+                videos: videoId,
+            },
+        },
+        {
+            new: true,
+        }
+    );
 
     return res
         .status(200)
@@ -207,11 +231,6 @@ const deleteVideoToPlaylist = asyncHandler(async (req, res) => {
 });
 
 export {
-    getPlaylist,
-    createPlaylist,
-    updatePlaylist,
-    deletePlaylist,
-    getUserPlaylist,
-    deleteVideoToPlaylist,
-    addVideoToPlaylist,
+    addVideoToPlaylist, createPlaylist, deletePlaylist, deleteVideoToPlaylist, getPlaylist, getUserPlaylist, updatePlaylist
 };
+

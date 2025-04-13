@@ -6,8 +6,8 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import {
     deleteFromCloudinary,
-    uploadOnCloudinary,
     getPublicIDByURL,
+    uploadOnCloudinary,
 } from "../utils/cloudinary.js";
 
 const options = {
@@ -167,7 +167,7 @@ const loginUser = asyncHandler(async (req, res) => {
         .json(
             new ApiResponse(
                 200,
-                { loggedInUser, accessToken, refreshToken }, // consider as good
+                { ...loggedInUser.toObject(), accessToken, refreshToken }, // consider as good
                 "User logged in successfully"
             )
         );
@@ -185,7 +185,7 @@ const logoutUser = asyncHandler(async (req, res) => {
         id,
         {
             $set: {
-                refreshToken: null,
+                refreshToken: 1,
             },
         },
         {
@@ -564,5 +564,6 @@ export {
     logoutUser,
     refreshAccessToken,
     registerUser,
-    updateFullNameAndEmail,
+    updateFullNameAndEmail
 };
+
