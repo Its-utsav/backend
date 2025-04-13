@@ -1,3 +1,4 @@
+import mongoose, { isValidObjectId } from "mongoose";
 import Video from "../models/video.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
@@ -10,8 +11,96 @@ import {
 
 // verifyUser -> req.user._id
 const getAllVideos = asyncHandler(async (req, res) => {
-    const allVideos = await Video.find();
+    let {
+        page = 1,
+        limit = 10,
+        query = "",
+        sortBy,
+        sortType,
+        userId,
+    } = req.query;
 
+    page = parseInt(page < 0 ? 1 : page);
+    limit = parseInt(limit <= 0 ? 10 : limit);
+
+    const matchCondition = [];
+
+    if (userId && isValidObjectId(userId)) {
+        matchCondition.push({
+            owner: new mongoose.Types.ObjectId(userId),
+        });
+    }
+    if (query.trim()) {
+        matchCondition.push({
+            $or: [
+                {
+                    title: {
+                        $regex: query,
+                        $options: "i",
+                    },
+                },
+                {
+                    description: {
+                        $regex: query,
+                        $options: "i",
+                    },
+                },
+            ],
+        });
+    }
+
+    const matchStage = {
+        $match: matchCondition.length > 0 ? { $and: matchCondition } : {},
+    };
+    const sortStage = {
+        $sort: {
+            [sortBy || "createdAt"]: sortType === "asc" ? 1 : -1,
+        },
+    };
+    // console.dir(matchStage, { depth: Infinity });
+    const pipline = [
+        matchStage,
+        {
+            $lookup: {
+                from: "users",
+                foreignField: "_id",
+                localField: "owner",
+                as: "owner",
+                pipeline: [
+                    {
+                        $project: {
+                            username: 1,
+                            avatar: 1,
+                        },
+                    },
+                ],
+            },
+        },
+        {
+            $lookup: {
+                from: "likes",
+                foreignField: "_id",
+                localField: "video",
+                as: "likes",
+            },
+        },
+        {
+            $addFields: {
+                owner: { $first: "$owner" },
+                likes: { $size: "$likes" },
+            }
+        }
+        ,
+        sortStage,
+    ];
+
+    const allVideos = await Video.aggregatePaginate(Video.aggregate(pipline), {
+        limit,
+        page,
+    });
+    if (!allVideos) {
+        throw new ApiError(400, "VIdeo not found");
+    }
     return res
         .status(200)
         .json(

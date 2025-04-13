@@ -130,30 +130,33 @@ const getAllSubscriptions = asyncHandler(async (req, res) => {
     const subscription = await Subscription.aggregate([
         {
             $match: {
-                subscriber: new mongoose.Types.ObjectId(channelId)
-            }
-        }, {
+                subscriber: new mongoose.Types.ObjectId(channelId),
+            },
+        },
+        {
             $lookup: {
                 from: "users",
                 foreignField: "_id",
                 localField: "channel",
                 as: "subscription",
-                pipeline: [{
-                    $project: {
-                        username: 1, avatar: 1
-                    }
-                }]
-            }
-        }
-    ])
+                pipeline: [
+                    {
+                        $project: {
+                            username: 1,
+                            avatar: 1,
+                        },
+                    },
+                ],
+            },
+        },
+    ]);
 
     if (subscription?.length === 0) {
         throw new ApiError(404, "No Subscription found");
     }
-    return res.status(200).json(
-        new ApiResponse(200, subscription, "Data fetched successfully")
-    )
+    return res
+        .status(200)
+        .json(new ApiResponse(200, subscription, "Data fetched successfully"));
 });
 
 export { getAllSubscribers, getAllSubscriptions, toggleSubscription };
-

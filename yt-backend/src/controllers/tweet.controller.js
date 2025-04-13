@@ -1,3 +1,4 @@
+import { isValidObjectId } from "mongoose";
 import Tweet from "../models/tweet.model.js";
 import User from "../models/user.model.js";
 import { ApiError } from "../utils/ApiError.js";
@@ -42,8 +43,8 @@ const getAllTweets = asyncHandler(async (req, res) => {
 const getUserTweets = asyncHandler(async (req, res) => {
     const { userId } = req.params;
 
-    if (!userId) {
-        throw new ApiError(401, "User Id is not provided");
+    if (!userId || !isValidObjectId(userId)) {
+        throw new ApiError(401, "User Id is not provided or invalid");
     }
 
     const existingUser = await User.findById(userId);
@@ -65,8 +66,8 @@ const getUserTweets = asyncHandler(async (req, res) => {
 const updateTweet = asyncHandler(async (req, res) => {
     const { tweetId } = req.params;
 
-    if (!tweetId) {
-        throw new ApiError(401, "Tweet Id not provided");
+    if (!tweetId || !isValidObjectId(tweetId)) {
+        throw new ApiError(401, "Tweet Id not provided or invalid");
     }
     const { tweetContent } = req.body;
 
@@ -112,9 +113,10 @@ const updateTweet = asyncHandler(async (req, res) => {
 const deleteTweet = asyncHandler(async (req, res) => {
     const { tweetId } = req.params;
 
-    if (!tweetId) {
-        throw new ApiError(401, "Tweet Id not provided");
+    if (!tweetId || !isValidObjectId(tweetId)) {
+        throw new ApiError(401, "Tweet Id not provided or invalid");
     }
+
     const tweet = await Tweet.findById(tweetId);
 
     if (!tweet) {
@@ -137,9 +139,10 @@ const deleteTweet = asyncHandler(async (req, res) => {
 const getTweetByTweetId = asyncHandler(async (req, res) => {
     const { tweetId } = req.params;
 
-    if (!tweetId) {
-        throw new ApiError(401, "Tweet Id not provided");
+    if (!tweetId || !isValidObjectId(tweetId)) {
+        throw new ApiError(401, "Tweet Id not provided or invalid");
     }
+
     const tweet = await Tweet.findById(tweetId);
 
     if (!tweet) {
@@ -154,7 +157,7 @@ export {
     createTweet,
     deleteTweet,
     getAllTweets,
+    getTweetByTweetId,
     getUserTweets,
     updateTweet,
-    getTweetByTweetId,
 };

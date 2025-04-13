@@ -564,6 +564,5 @@ export {
     logoutUser,
     refreshAccessToken,
     registerUser,
-    updateFullNameAndEmail
+    updateFullNameAndEmail,
 };
-

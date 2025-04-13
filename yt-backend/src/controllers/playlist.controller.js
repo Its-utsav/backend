@@ -231,6 +231,11 @@ const deleteVideoToPlaylist = asyncHandler(async (req, res) => {
 });
 
 export {
-    addVideoToPlaylist, createPlaylist, deletePlaylist, deleteVideoToPlaylist, getPlaylist, getUserPlaylist, updatePlaylist
+    addVideoToPlaylist,
+    createPlaylist,
+    deletePlaylist,
+    deleteVideoToPlaylist,
+    getPlaylist,
+    getUserPlaylist,
+    updatePlaylist,
 };
-

@@ -162,8 +162,8 @@ const getLikedVideos = asyncHandler(async (req, res) => {
 });
 
 export {
-    getLikedVideos, toggleLikeOnComment,
+    getLikedVideos,
+    toggleLikeOnComment,
     toggleLikeOnTweet,
-    toggleLikeOnVideo
+    toggleLikeOnVideo,
 };
-
