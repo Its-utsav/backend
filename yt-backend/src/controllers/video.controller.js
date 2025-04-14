@@ -88,9 +88,8 @@ const getAllVideos = asyncHandler(async (req, res) => {
             $addFields: {
                 owner: { $first: "$owner" },
                 likes: { $size: "$likes" },
-            }
-        }
-        ,
+            },
+        },
         sortStage,
     ];
 
@@ -256,4 +255,54 @@ const deleteVideo = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, delVideo, "Video deleted"));
 });
 
-export { deleteVideo, getAllVideos, getVideoById, updateVideo, uploadVideo };
+const toggleVideoVisiblity = asyncHandler(async (req, res) => {
+    const { videoId } = req.params;
+    if (!videoId) throw new ApiError(400, "Video Id is not provided");
+    if (!isValidObjectId(videoId)) throw new ApiError(400, "Invalid Video Id");
+
+    const video = await Video.findById(videoId);
+
+    if (!video)
+        throw new ApiError(400, "Video is not found with given video id");
+    let msg = "";
+    let updatedVideo;
+    if (video.isPublish) {
+        updatedVideo = await Video.findByIdAndUpdate(
+            videoId,
+            {
+                $set: {
+                    isPublish: false,
+                },
+            },
+            {
+                new: true,
+            }
+        );
+        msg = "Video is private";
+    } else {
+        updatedVideo = await Video.findByIdAndUpdate(
+            videoId,
+            {
+                $set: {
+                    isPublish: true,
+                },
+            },
+            {
+                new: true,
+            }
+        );
+        msg = "Video is public";
+    }
+    return res
+        .status(200)
+        .json(new ApiResponse(200, { video: updatedVideo }, msg));
+});
+
+export {
+    deleteVideo,
+    getAllVideos,
+    getVideoById,
+    toggleVideoVisiblity,
+    updateVideo,
+    uploadVideo,
+};

@@ -3,6 +3,7 @@ import {
     deleteVideo,
     getAllVideos,
     getVideoById,
+    toggleVideoVisiblity,
     updateVideo,
     uploadVideo,
 } from "../controllers/video.controller.js";
@@ -33,5 +34,7 @@ router
     .get(getVideoById)
     .patch(uploadWithMulter.single("thumbnail"), updateVideo)
     .delete(deleteVideo);
+
+router.route("/toggle/:videoId").patch(toggleVideoVisiblity);
 
 export default router;
