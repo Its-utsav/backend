@@ -6,9 +6,14 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import {
     deleteFromCloudinary,
+    deleteManyFromCloudinary,
     getPublicIDByURL,
     uploadOnCloudinary,
 } from "../utils/cloudinary.js";
+import Tweet from "../models/tweet.model.js";
+import Comment from "../models/comments.model.js";
+import Video from "../models/video.model.js";
+import Subscription from "../models/subscription.model.js";
 
 const options = {
     httpOnly: true,
@@ -552,6 +557,99 @@ const getWatchHistory = asyncHandler(async (req, res) => {
         );
 });
 
+const deleteUser = asyncHandler(async (req, res) => {
+    // If user delete that means all tweets , video , comments should also deleted
+    const userId = req.user._id;
+    const session = await mongoose.startSession();
+    const isValidUser = await User.findById(userId);
+    if (!isValidUser) {
+        throw new ApiError(404, "User not found");
+    }
+
+    try {
+        session.startTransaction();
+        const tweetDelete = await Tweet.deleteMany({ owner: userId }).session(
+            session
+        );
+        if (!tweetDelete.acknowledged) {
+            session.abortTransaction();
+            throw new ApiError(
+                500,
+                "Internal server error while deleting user"
+            );
+        }
+
+        const commentDelete = await Comment.deleteMany({
+            owner: userId,
+        }).session(session);
+
+        if (!commentDelete.acknowledged) {
+            session.abortTransaction();
+            throw new ApiError(
+                500,
+                "Internal server error while deleting user"
+            );
+        }
+
+        const videos = await Video.find({ owner: userId });
+
+        if (videos.length >= 1) {
+            const videoPublicId = videos.map((video) =>
+                getPublicIDByURL(video.videoUrl)
+            );
+            const thumbnailPublicId = videos.map((video) =>
+                getPublicIDByURL(video.thumbnailUrl)
+            );
+
+            await deleteManyFromCloudinary(videoPublicId); // video delete
+            await deleteManyFromCloudinary(thumbnailPublicId); // thumbnail delete
+
+            const deleteVideos = await Video.deleteMany({
+                owner: userId,
+            }).session(session);
+
+            if (!deleteVideos.acknowledged) {
+                session.abortTransaction();
+                throw new ApiError(
+                    500,
+                    "Internal server error while deleting user"
+                );
+            }
+        }
+
+        const subscription = await Subscription.deleteMany({
+            $or: [{ subscriber: userId }, { channel: userId }],
+        }).session(session);
+
+        if (!subscription.acknowledged) {
+            await session.abortTransaction();
+            throw new ApiError(
+                500,
+                "Internal server error while deleting user"
+            );
+        }
+
+        const userDelete =
+            await User.findByIdAndDelete(userId).session(session);
+        if (!userDelete) {
+            throw new ApiError(
+                500,
+                "Internal server error while deleting user"
+            );
+        }
+        await session.commitTransaction();
+
+        return res
+            .status(200)
+            .json(new ApiResponse(200, "User Delete succesfully"));
+    } catch (error) {
+        await session.abortTransaction();
+        throw new ApiError(500, error.message || "Internal server error");
+    } finally {
+        await session.endSession();
+    }
+});
+
 export {
     avatarUpdate,
     changePassword,
@@ -565,4 +663,5 @@ export {
     refreshAccessToken,
     registerUser,
     updateFullNameAndEmail,
+    deleteUser,
 };

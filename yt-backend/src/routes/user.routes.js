@@ -11,6 +11,7 @@ import {
     refreshAccessToken,
     registerUser,
     updateFullNameAndEmail,
+    deleteUser,
 } from "../controllers/user.controller.js";
 import {
     formData,
@@ -52,5 +53,6 @@ router
 
 router.route("/c/:username").get(verifyUser, getUserChannelProfile);
 router.route("/watchHistory").get(verifyUser, getWatchHistory);
+router.route("/delete").get(verifyUser, deleteUser);
 
 export default router;

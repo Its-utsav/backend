@@ -33,11 +33,23 @@ const uploadOnCloudinary = async (localPath) => {
 const getPublicIDByURL = (url) => url.split("/").pop().split(".")[0];
 
 const deleteFromCloudinary = async (publicID) => {
-    await cloudinary.uploader.destroy(publicID, (error) => {
-        if (error) {
-            throw new ApiError(500, "Exising file could not be deleted");
-        }
-    });
+    try {
+        await cloudinary.uploader.destroy(publicID);
+    } catch (error) {
+        throw new ApiError(500, "Exising file could not be deleted");
+    }
+};
+const deleteManyFromCloudinary = async (publicIDs) => {
+    try {
+        await cloudinary.api.delete_resources(publicIDs);
+    } catch (error) {
+        throw new ApiError(500, "Exising file could not be deleted");
+    }
 };
 
-export { uploadOnCloudinary, deleteFromCloudinary, getPublicIDByURL };
+export {
+    uploadOnCloudinary,
+    deleteFromCloudinary,
+    getPublicIDByURL,
+    deleteManyFromCloudinary,
+};
